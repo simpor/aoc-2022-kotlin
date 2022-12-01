@@ -4,9 +4,7 @@ import AoCUtils.test
 fun main() {
 
     fun part1(input: String, debug: Boolean = false): Long {
-
         val elves = input.split("\n\n")
-
         return elves.map { s -> s.split("\n").sumOf { it.toInt() } }.max().toLong()
     }
 
@@ -17,7 +15,6 @@ fun main() {
         return elves.map { s -> s.split("\n").sumOf { it.toInt() } }.sorted().asReversed().take(3).sum().toLong()
 
     }
-
 
     val testInput = "1000\n" +
             "2000\n" +
