@@ -8,9 +8,7 @@ fun main() {
     }
 
     fun part2(input: String, debug: Boolean = false): Long {
-
         return 0L
-
     }
     
     val testInput = "add test example"
