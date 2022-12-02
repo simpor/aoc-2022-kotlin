@@ -1,11 +1,11 @@
 import AoCUtils
 import AoCUtils.test
+import Type.*
+
+enum class Type(val score: Long) { ROCK(1L), PAPER(2L), SCISSOR(3L) }
 
 fun main() {
 
-    val rockX = 1L
-    val paperY = 2L
-    val scissorZ = 3L
     val lost = 0L
     val draw = 3L
     val win = 6L
@@ -15,29 +15,31 @@ fun main() {
     fun draw(a: String) = a == "Y"
 
 
+    fun toType(a: String) = if (isRock(a)) ROCK else if (isPaper(a)) PAPER else SCISSOR
+
     fun part1(input: String, debug: Boolean = false): Long {
         return input.lines().filter { it.isNotEmpty() }.sumOf { game ->
             val a = game.split(" ")
-            val first = a[0]
-            val second = a[1]
+            val first = toType(a[0])
+            val second = toType(a[1])
 
-            when {
-                isRock(first) -> when {
-                    isRock(second) -> rockX + draw
-                    isPaper(second) -> paperY + win
-                    else -> scissorZ + lost
+            when (first) {
+                ROCK -> when (second) {
+                    ROCK -> second.score + draw
+                    PAPER -> second.score + win
+                    SCISSOR -> second.score + lost
                 }
 
-                isPaper(first) -> when {
-                    isRock(second) -> rockX + lost
-                    isPaper(second) -> paperY + draw
-                    else -> scissorZ + win
+                PAPER -> when (second) {
+                    ROCK -> second.score + lost
+                    PAPER -> second.score + draw
+                    SCISSOR -> second.score + win
                 }
 
-                else -> when {
-                    isRock(second) -> rockX + win
-                    isPaper(second) -> paperY + lost
-                    else -> scissorZ + draw
+                else -> when (second) {
+                    ROCK -> second.score + win
+                    PAPER -> second.score + lost
+                    SCISSOR -> second.score + draw
                 }
             }
         }
@@ -48,25 +50,25 @@ fun main() {
     fun part2(input: String, debug: Boolean = false): Long {
         return input.lines().filter { it.isNotEmpty() }.sumOf { game ->
             val a = game.split(" ")
-            val first = a[0]
+            val first = toType(a[0])
             val second = a[1]
-            when {
-                isRock(first) -> when {
-                    win(second) -> paperY + win
-                    draw(second) -> rockX + draw
-                    else -> scissorZ + lost
+            when (first) {
+                ROCK -> when {
+                    win(second) -> PAPER.score + win
+                    draw(second) -> ROCK.score + draw
+                    else -> SCISSOR.score + lost
                 }
 
-                isPaper(first) -> when {
-                    win(second) -> scissorZ + win
-                    draw(second) -> paperY + draw
-                    else -> rockX + lost
+                PAPER -> when {
+                    win(second) -> SCISSOR.score + win
+                    draw(second) -> PAPER.score + draw
+                    else -> ROCK.score + lost
                 }
 
-                else -> when {
-                    win(second) -> rockX + win
-                    draw(second) -> scissorZ + draw
-                    else -> paperY + lost
+                SCISSOR -> when {
+                    win(second) -> ROCK.score + win
+                    draw(second) -> SCISSOR.score + draw
+                    else -> PAPER.score + lost
                 }
             }
         }
