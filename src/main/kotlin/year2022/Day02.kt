@@ -20,80 +20,67 @@ fun main() {
     val win = 6L
     fun isRock(a: String) = a == "A" || a == "X"
     fun isPaper(a: String) = a == "B" || a == "Y"
-    fun isScissor(a: String) = a == "C" || a == "Z"
-
+    fun win(a: String) = a == "Z"
+    fun draw(a: String) = a == "Y"
 
 
     fun part1(input: String, debug: Boolean = false): Long {
-        return input.lines().filter { it.isNotEmpty() }.map { game ->
+        return input.lines().filter { it.isNotEmpty() }.sumOf { game ->
             val a = game.split(" ")
             val first = a[0]
             val second = a[1]
 
-            val score = when {
-                isRock(first) -> {
-                    when {
-                        isRock(second) -> rockX + draw
-                        isPaper(second) -> paperY + lost
-                        else -> scissorZ+lost
-                    }
-                }
-                else -> 0
-            }
-
-
-            when (first) {
-                firstRock -> when (second) {
-                    secondRock -> rockX + draw
-                    secondPaper -> paperY + win
+            when {
+                isRock(first) -> when {
+                    isRock(second) -> rockX + draw
+                    isPaper(second) -> paperY + win
                     else -> scissorZ + lost
                 }
 
-                firstPaper -> when (second) {
-                    secondRock -> rockX + lost
-                    secondPaper -> paperY + draw
+                isPaper(first) -> when {
+                    isRock(second) -> rockX + lost
+                    isPaper(second) -> paperY + draw
                     else -> scissorZ + win
                 }
 
-                else -> when (second) {
-                    secondRock -> rockX + win
-                    secondPaper -> paperY + lost
+                else -> when {
+                    isRock(second) -> rockX + win
+                    isPaper(second) -> paperY + lost
                     else -> scissorZ + draw
                 }
             }
-
-        }.sum()
+        }
 
 
     }
 
     fun part2(input: String, debug: Boolean = false): Long {
-        return input.lines().filter { it.isNotEmpty() }.map { game ->
+        return input.lines().filter { it.isNotEmpty() }.sumOf { game ->
             val a = game.split(" ")
             val first = a[0]
             val second = a[1]
-// A for Rock, B for Paper, and C for Scissors
-            when (first) {
-                firstRock -> when (second) {
-                    secondRock -> scissorZ + lost
-                    secondPaper -> rockX + draw
-                    else -> paperY + win
+            when {
+                isRock(first) -> when {
+                    win(second) -> paperY + win
+                    draw(second) -> rockX + draw
+                    else -> scissorZ + lost
                 }
 
-                firstPaper -> when (second) {
-                    secondRock -> rockX + lost
-                    secondPaper -> paperY + draw
-                    else -> scissorZ + win
+                isPaper(first) -> when {
+                    win(second) -> scissorZ + win
+                    draw(second) -> paperY + draw
+                    else -> rockX + lost
                 }
 
-                else -> when (second) {
-                    secondRock -> paperY + lost
-                    secondPaper -> scissorZ + draw
-                    else -> rockX + win
+                else -> when {
+                    win(second) -> rockX + win
+                    draw(second) -> scissorZ + draw
+                    else -> paperY + lost
                 }
             }
 
-        }.sum()
+
+        }
     }
 
     val testInput = "A Y\n" +
