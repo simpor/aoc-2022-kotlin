@@ -6,15 +6,6 @@ fun main() {
     val rockX = 1L
     val paperY = 2L
     val scissorZ = 3L
-
-    val firstRock = "A"
-    val firstPaper = "B"
-    val firstScissor = "C"
-
-    val secondRock = "X"
-    val secondPaper = "Y"
-    val secondScissor = "Z"
-
     val lost = 0L
     val draw = 3L
     val win = 6L
