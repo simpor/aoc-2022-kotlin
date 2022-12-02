@@ -69,8 +69,6 @@ fun main() {
                     else -> paperY + lost
                 }
             }
-
-
         }
     }
 

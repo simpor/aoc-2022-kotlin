@@ -9,9 +9,7 @@ fun main() {
     }
 
     fun part2(input: String, debug: Boolean = false): Long {
-
         return 1L
-
     }
 
     val testInput = "xx"
