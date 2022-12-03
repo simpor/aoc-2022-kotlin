@@ -5,50 +5,32 @@ fun main() {
 
 
     fun part1(input: String, debug: Boolean = false): Long {
-
-        val answer = input.lines().map { line ->
+        return input.lines().map { line ->
             val firstItem = line.substring(0, line.length / 2)
             val secondItem = line.substring(line.length / 2)
             firstItem.map { c -> if (secondItem.contains(c)) c else null }
                 .filterNotNull()
                 .distinct()
-                .map { c ->
-                    val prio = if (c.isLowerCase()) c.code - 'a'.code + 1
-                    else c.code - 'A'.code + 27
-                    prio
+                .map {
+                    if (it.isLowerCase()) it.code - 'a'.code + 1
+                    else it.code - 'A'.code + 27
                 }
-        }.flatten()
-            .sum()
-
-        return answer.toLong()
+        }.flatten().sum().toLong()
     }
 
     fun part2(input: String, debug: Boolean = false): Long {
-
-        val x = input.lines()
-            .chunked(3)
-            .map { list ->
-                val first = list[0]
-                val second = list[1]
-                val third = list[2]
-                first.map { c ->
-                    if (second.contains(c) && third.contains(c)) c else null
-                }.distinct()
-            }.flatten().filterNotNull().map { c ->
-                val prio = if (c.isLowerCase()) c.code - 'a'.code + 1
-                else c.code - 'A'.code + 27
-                prio
-            }.sum()
-
-        return x.toLong()
+        return input.lines().chunked(3).map {
+            it[0].map { c ->
+                if (it[1].contains(c) && it[2].contains(c)) c else null
+            }.filterNotNull().distinct()
+        }.flatten().sumOf {
+            if (it.isLowerCase()) it.code - 'a'.code + 1
+            else it.code - 'A'.code + 27
+        }.toLong()
     }
 
-    val testInput = "vJrwpWtwJgWrhcsFMMfFFhFp\n" +
-            "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\n" +
-            "PmmdzqPrVvPwwTWBwg\n" +
-            "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\n" +
-            "ttgJtRGJQctTZtZT\n" +
-            "CrZsJsPPZsGzwwsLwLmpwMDw"
+    val testInput =
+        "vJrwpWtwJgWrhcsFMMfFFhFp\n" + "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\n" + "PmmdzqPrVvPwwTWBwg\n" + "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\n" + "ttgJtRGJQctTZtZT\n" + "CrZsJsPPZsGzwwsLwLmpwMDw"
 
     val input = AoCUtils.readText("year2022/day03.txt")
 
