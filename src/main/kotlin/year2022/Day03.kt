@@ -30,7 +30,12 @@ fun main() {
     }
 
     val testInput =
-        "vJrwpWtwJgWrhcsFMMfFFhFp\n" + "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\n" + "PmmdzqPrVvPwwTWBwg\n" + "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\n" + "ttgJtRGJQctTZtZT\n" + "CrZsJsPPZsGzwwsLwLmpwMDw"
+        "vJrwpWtwJgWrhcsFMMfFFhFp\n" +
+                "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\n" +
+                "PmmdzqPrVvPwwTWBwg\n" +
+                "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\n" +
+                "ttgJtRGJQctTZtZT\n" +
+                "CrZsJsPPZsGzwwsLwLmpwMDw"
 
     val input = AoCUtils.readText("year2022/day03.txt")
 
