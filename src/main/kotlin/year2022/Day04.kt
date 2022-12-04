@@ -27,9 +27,7 @@ fun main() {
         }.map { elves ->
             val e1 = elves[0]
             val e2 = elves[1]
-            if (e1.contains(e2.first) || e1.contains(e2.last)) true
-            else if (e2.contains(e1.first) || e2.contains(e1.last)) true
-            else false
+            e1.contains(e2.first) || e1.contains(e2.last) || e2.contains(e1.first) || e2.contains(e1.last)
         }.count { it }.toLong()
     }
 
