@@ -8,13 +8,13 @@ fun main() {
         return input.lines().map { line ->
             line.split(",").map {
                 val x = it.split("-")
-                Pair(x[0].toInt(), x[1].toInt())
+                IntRange(x[0].toInt(), x[1].toInt())
             }
         }.map { elves ->
             val e1 = elves[0]
             val e2 = elves[1]
-            if (e1.first >= e2.first && e1.second <= e2.second) true
-            else e2.first >= e1.first && e2.second <= e1.second
+            if (e2.contains(e1.first) && e2.contains(e1.last)) true
+            else e1.contains(e2.first) && e1.contains(e2.last)
         }.count { it }.toLong()
     }
 
@@ -22,15 +22,13 @@ fun main() {
         return input.lines().map { line ->
             line.split(",").map {
                 val x = it.split("-")
-                Pair(x[0].toInt(), x[1].toInt())
+                IntRange(x[0].toInt(), x[1].toInt())
             }
         }.map { elves ->
             val e1 = elves[0]
             val e2 = elves[1]
-            if (e1.first >= e2.first && e1.first <= e2.second) true
-            else if (e1.second >= e2.first && e1.second <= e2.second) true
-            else if (e2.second >= e1.first && e2.second <= e1.second) true
-            else if (e2.first >= e1.first && e2.first <= e1.second) true
+            if (e1.contains(e2.first) || e1.contains(e2.last)) true
+            else if (e2.contains(e1.first) || e2.contains(e1.last)) true
             else false
         }.count { it }.toLong()
     }
@@ -49,5 +47,5 @@ fun main() {
     part1(input, false) test Pair(490L, "part 1")
 
     part2(testInput, false) test Pair(4L, "test 2 part 2")
-    part2(input) test Pair(0L, "part 2")
+    part2(input) test Pair(921L, "part 2")
 }
