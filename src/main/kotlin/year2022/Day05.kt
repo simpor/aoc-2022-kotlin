@@ -6,13 +6,12 @@ fun main() {
 
 
     fun part1(input: String, debug: Boolean = false): String {
-        val towers = input.lines().filter { it.startsWith(" 1 ") }.map { it.replace(" ", "") }.last().length
-        val crates = mutableListOf<MutableList<String>>()
-
-        for (a in 1..towers) {
-            crates.add(mutableListOf())
-        }
-
+        val crates = input.lines().filter { it.startsWith(" 1 ") }
+            .map { it.replace(" ", "") }
+            .last()
+            .toCharArray()
+            .map { mutableListOf<String>() }
+            .toMutableList()
 
         input.lines().filter { it.contains("[") }
             .map { line ->
@@ -20,14 +19,14 @@ fun main() {
                     .map { it.trim().replace("]", "").replace("[", "") }
                     .mapIndexed { index, s ->
                         if (s.isNotBlank()) crates[index].add(0, s)
-//                        println("$index -> $s")
                     }
             }
 
-        val craneMovements = input.lines().filter { it.contains("move") }.map { line ->
-            val a = line.split("move|from|to".toRegex()).map { it.trim() }
-            Crane(a[1].toInt(), a[2].toInt(), a[3].toInt())
-        }
+        val craneMovements = input.lines().filter { it.contains("move") }
+            .map { line ->
+                val a = line.split("move|from|to".toRegex()).map { it.trim() }
+                Crane(a[1].toInt(), a[2].toInt(), a[3].toInt())
+            }
 
         craneMovements.forEach { movement ->
             for (crate in 1..movement.move) {
@@ -35,16 +34,16 @@ fun main() {
             }
         }
 
-        return crates.map { it.last() }.joinToString("")
+        return crates.joinToString("") { it.last() }
     }
 
     fun part2(input: String, debug: Boolean = false): String {
-        val towers = input.lines().filter { it.startsWith(" 1 ") }.map { it.replace(" ", "") }.last().length
-        val crates = mutableListOf<MutableList<String>>()
-
-        for (a in 1..towers) {
-            crates.add(mutableListOf())
-        }
+        val crates = input.lines().filter { it.startsWith(" 1 ") }
+            .map { it.replace(" ", "") }
+            .last()
+            .toCharArray()
+            .map { mutableListOf<String>() }
+            .toMutableList()
 
 
         input.lines().filter { it.contains("[") }
@@ -53,7 +52,6 @@ fun main() {
                     .map { it.trim().replace("]", "").replace("[", "") }
                     .mapIndexed { index, s ->
                         if (s.isNotBlank()) crates[index].add(0, s)
-//                        println("$index -> $s")
                     }
             }
 
@@ -70,7 +68,7 @@ fun main() {
             crates[movement.to - 1].addAll(list)
         }
 
-        return crates.map { it.last() }.joinToString("")
+        return crates.joinToString("") { it.last() }
     }
 
     val testInput =
@@ -90,5 +88,5 @@ fun main() {
     part1(input, false) test Pair("SHQWSRBDL", "part 1")
 
     part2(testInput, false) test Pair("MCD", "test 2 part 2")
-    part2(input) test Pair("921L", "part 2")
+    part2(input) test Pair("CDTQZHBRS", "part 2")
 }
