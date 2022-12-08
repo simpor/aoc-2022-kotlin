@@ -69,12 +69,20 @@ fun main() {
         return treeMap.values.filter { it.visible }.count().toLong()
     }
 
-    fun calcScenic(treeMap: MutableMap<Point, Tree>, tree: Tree, maxY: Int, maxX: Int) {
+
+    fun calcScenic(treeMap: MutableMap<Point, Tree>, tree: Tree, maxX: Int, maxY: Int) {
         var prev = 0
         var yInc = 0
+        var yDesc = 0
+        var xInc = 0
+        var xDesc = 0
+        if (tree.x == 2 && tree.y == 3) {
+            prev = 0
+        }
+        prev = 0
         for (y in (tree.y + 1)..maxY) {
             val current = treeMap[Point(tree.x, y)]!!
-            if (prev != 0 && current.height > prev) {
+            if (prev != 0 && current.height >= prev) {
                 yInc++
                 prev = current.height
             } else if (prev == 0 && current.height >= tree.height) {
@@ -83,13 +91,15 @@ fun main() {
             } else if (prev == 0) {
                 yInc++
                 prev = current.height
+            } else {
+                break
             }
         }
-        var yDesc = 0
+
         prev = 0
         for (y in (tree.y - 1) downTo 0) {
             val current = treeMap[Point(tree.x, y)]!!
-            if (prev != 0 && current.height > prev) {
+            if (prev != 0 && current.height >= prev) {
                 yDesc++
                 prev = current.height
             } else if (prev == 0 && current.height >= tree.height) {
@@ -98,29 +108,32 @@ fun main() {
             } else if (prev == 0) {
                 yDesc++
                 prev = current.height
+            } else {
+                break
             }
         }
 
         prev = 0
-        var xInc = 0
         for (x in (tree.x + 1)..maxX) {
             val current = treeMap[Point(x, tree.y)]!!
-            if (prev != 0 && current.height > prev) {
+            if (prev != 0 && current.height >= prev) {
                 xInc++
                 prev = current.height
-            } else if (prev == 0 && current.height == tree.height) {
+            } else if (prev == 0 && current.height >= tree.height) {
                 xInc = 1
                 break
-            } else if (prev == 0 && current.height >= tree.height) {
+            } else if (prev == 0) {
                 xInc++
                 prev = current.height
+            } else {
+                break
             }
         }
-        var xDesc = 0
+
         prev = 0
         for (x in (tree.x - 1) downTo 0) {
             val current = treeMap[Point(x, tree.y)]!!
-            if (prev != 0 && current.height > prev) {
+            if (prev != 0 && current.height >= prev) {
                 xDesc++
                 prev = current.height
             } else if (prev == 0 && current.height >= tree.height) {
@@ -129,6 +142,8 @@ fun main() {
             } else if (prev == 0) {
                 xDesc++
                 prev = current.height
+            } else {
+                break
             }
         }
 
@@ -148,11 +163,11 @@ fun main() {
         treeMap.values
             .filter { (it.y in 1 until maxY) && (it.x in 1 until maxX) }
             .forEach { tree ->
-                calcScenic(treeMap, tree, maxY, maxX)
+                calcScenic(treeMap, tree, maxX, maxY)
             }
 
         val first = treeMap.values.sortedBy { it.scenic }.last()
-        calcScenic(treeMap, first, maxY, maxX)
+        calcScenic(treeMap, first, maxX, maxY)
 
         return first.scenic.toLong()
     }
@@ -170,5 +185,5 @@ fun main() {
     part1(input, false) test Pair(1672L, "part 1")
 
     part2(testInput, false) test Pair(8L, "test 2 part 2")
-    part2(input) test Pair(921L, "part 2")
+    part2(input) test Pair(0L, "part 2") // no 350
 }
