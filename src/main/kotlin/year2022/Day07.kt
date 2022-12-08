@@ -11,7 +11,6 @@ fun main() {
         var totalSize: Long = 0
     ) {
         val level: Int
-
         init {
             level = if (parent != null) parent.level + 1 else 0
         }
