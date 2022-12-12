@@ -17,7 +17,7 @@ fun main() {
 
     val input = AoCUtils.readText("year2022/day09.txt")
 
-    part1(testInput, false) test Pair(0L, "test 1 part 1")
+    part1(testInput, false) test Pair(13L, "test 1 part 1")
     part1(input, false) test Pair(0L, "part 1")
 
     part2(testInput, false) test Pair(0L, "test 2 part 2")
