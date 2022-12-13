@@ -70,84 +70,67 @@ fun main() {
     }
 
 
-    fun calcScenic(treeMap: MutableMap<Point, Tree>, tree: Tree, maxX: Int, maxY: Int) {
-        var prev = 0
-        var yInc = 0
-        var yDesc = 0
-        var xInc = 0
-        var xDesc = 0
-        if (tree.x == 2 && tree.y == 3) {
-            prev = 0
+    fun look(height: Int, trees: MutableList<Int>): Int {
+        if (trees.size == 0) return 0
+
+        var t = 0
+        var prev = -1
+        trees.forEach { h ->
+            if (h >= height) {
+                t++
+                return t
+            } else if (prev == -1) {
+                t++
+                prev = h
+            } else if (h < prev) {
+            } else if (h >= prev) {
+                prev = h
+                t++
+            }
         }
-        prev = 0
+        return t
+    }
+
+    fun calcScenic(treeMap: MutableMap<Point, Tree>, tree: Tree, maxX: Int, maxY: Int) {
+        val yInc = mutableListOf<Int>()
+        val yDesc = mutableListOf<Int>()
+        val xInc = mutableListOf<Int>()
+        val xDesc = mutableListOf<Int>()
+
         for (y in (tree.y + 1)..maxY) {
             val current = treeMap[Point(tree.x, y)]!!
-            if (prev != 0 && current.height >= prev) {
-                yInc++
-                prev = current.height
-            } else if (prev == 0 && current.height >= tree.height) {
-                yInc = 1
-                break
-            } else if (prev == 0) {
-                yInc++
-                prev = current.height
-            } else {
-                break
-            }
+            yInc.add(current.height)
         }
 
-        prev = 0
         for (y in (tree.y - 1) downTo 0) {
             val current = treeMap[Point(tree.x, y)]!!
-            if (prev != 0 && current.height >= prev) {
-                yDesc++
-                prev = current.height
-            } else if (prev == 0 && current.height >= tree.height) {
-                yDesc = 1
-                break
-            } else if (prev == 0) {
-                yDesc++
-                prev = current.height
-            } else {
-                break
-            }
+            yDesc.add(current.height)
         }
 
-        prev = 0
         for (x in (tree.x + 1)..maxX) {
             val current = treeMap[Point(x, tree.y)]!!
-            if (prev != 0 && current.height >= prev) {
-                xInc++
-                prev = current.height
-            } else if (prev == 0 && current.height >= tree.height) {
-                xInc = 1
-                break
-            } else if (prev == 0) {
-                xInc++
-                prev = current.height
-            } else {
-                break
-            }
+            xInc.add(current.height)
         }
 
-        prev = 0
         for (x in (tree.x - 1) downTo 0) {
             val current = treeMap[Point(x, tree.y)]!!
-            if (prev != 0 && current.height >= prev) {
-                xDesc++
-                prev = current.height
-            } else if (prev == 0 && current.height >= tree.height) {
-                xDesc = 1
-                break
-            } else if (prev == 0) {
-                xDesc++
-                prev = current.height
-            } else {
-                break
-            }
+            xDesc.add(current.height)
         }
 
-        tree.scenic = xInc * xDesc * yDesc * yInc
+
+        val xPlus = look(tree.height, xInc)
+        val xMinus = look(tree.height, xDesc)
+        val yMinus = look(tree.height, yDesc)
+        val yPlus = look(tree.height, yInc)
+
+
+        tree.scenic = xPlus * xMinus * yMinus * yPlus
+
+        if (tree.height == 9) {
+            if (tree.y == 29) {
+                // println("hej")
+            }
+        }
     }
 
     fun part2(input: String, debug: Boolean = false): Long {
@@ -167,7 +150,7 @@ fun main() {
             }
 
         val first = treeMap.values.sortedBy { it.scenic }.last()
-        calcScenic(treeMap, first, maxX, maxY)
+//        calcScenic(treeMap, first, maxX, maxY)
 
         return first.scenic.toLong()
     }
@@ -185,5 +168,6 @@ fun main() {
     part1(input, false) test Pair(1672L, "part 1")
 
     part2(testInput, false) test Pair(8L, "test 2 part 2")
-    part2(input) test Pair(0L, "part 2") // no 350
+    part2(input) test Pair(327180L, "part 2") // no 350
 }
+

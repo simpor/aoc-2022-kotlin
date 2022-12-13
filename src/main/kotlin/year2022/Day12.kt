@@ -13,7 +13,11 @@ fun main() {
     }
 
     val testInput =
-        ""
+        "Sabqponm\n" +
+                "abcryxxl\n" +
+                "accszExk\n" +
+                "acctuvwj\n" +
+                "abdefghi"
 
     val input = AoCUtils.readText("year2022/day12.txt")
 
