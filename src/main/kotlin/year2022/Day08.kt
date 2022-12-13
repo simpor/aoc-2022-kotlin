@@ -72,19 +72,12 @@ fun main() {
 
     fun look(height: Int, trees: MutableList<Int>): Int {
         if (trees.size == 0) return 0
-
         var t = 0
-        var prev = -1
         trees.forEach { h ->
             if (h >= height) {
                 t++
                 return t
-            } else if (prev == -1) {
-                t++
-                prev = h
-            } else if (h < prev) {
-            } else if (h >= prev) {
-                prev = h
+            } else {
                 t++
             }
         }
