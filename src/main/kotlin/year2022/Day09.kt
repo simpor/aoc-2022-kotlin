@@ -4,6 +4,26 @@ import kotlin.math.absoluteValue
 
 fun main() {
 
+    fun parse(input: String): List<Pair<String, Int>> {
+        val moves = input.lines().map { l ->
+            val s = l.split(" ")
+            Pair(s[0], s[1].toInt())
+        }
+        return moves
+    }
+
+    fun moveFunction(move: Pair<String, Int>): (Point) -> Point {
+        val updatePos = when (move.first) {
+            "U" -> { pos: Point -> pos.copy(y = pos.y + 1) }
+            "D" -> { pos: Point -> pos.copy(y = pos.y - 1) }
+            "R" -> { pos: Point -> pos.copy(x = pos.x + 1) }
+            "L" -> { pos: Point -> pos.copy(x = pos.x - 1) }
+            else -> throw Exception("Unknown move: $move")
+        }
+        return updatePos
+    }
+
+
     fun Point.isAround(other: Point): Boolean {
         if ((this.x - other.x).absoluteValue >= 2) return false
         if ((this.y - other.y).absoluteValue >= 2) return false
@@ -17,34 +37,24 @@ fun main() {
         } else {
             val prev = snake[i - 1]!!
             val newPrev = move.invoke(prev)
-            if (!newPrev.isAround(current)) {
-                Pair(i, prev)
-            } else {
+            if (newPrev.isAround(current)) {
                 Pair(i, current)
+            } else {
+                Pair(i, prev)
             }
         }
         return pair
     }
 
     fun part1(input: String, debug: Boolean = false): Long {
-        val moves = input.lines().map { l ->
-            val s = l.split(" ")
-            Pair(s[0], s[1].toInt())
-        }
-
+        val moves = parse(input)
         var snake = (0..1).map { Pair(it, Point(0, 0)) }.toMap()
         val map = mutableMapOf<Point, Boolean>()
 
         moves.forEach { move ->
-            val updatePos = when (move.first) {
-                "U" -> { pos:Point -> pos.copy(y = pos.y + 1) }
-                "D" -> { pos:Point -> pos.copy(y = pos.y - 1) }
-                "R" -> { pos:Point -> pos.copy(x = pos.x + 1) }
-                "L" -> { pos:Point -> pos.copy(x = pos.x - 1) }
-                else -> throw Exception("Unknown move: $move")
-            }
+            val updatePos = moveFunction(move)
             repeat(move.second) {
-                val newSnake = snake.keys.sorted().associate {  moveSnake(snake, it, updatePos) }
+                val newSnake = snake.keys.sorted().associate { moveSnake(snake, it, updatePos) }
                 snake = newSnake
                 map[snake[1]!!] = true
             }
@@ -54,25 +64,15 @@ fun main() {
     }
 
     fun part2(input: String, debug: Boolean = false): Long {
-        val moves = input.lines().map { l ->
-            val s = l.split(" ")
-            Pair(s[0], s[1].toInt())
-        }
+        val moves = parse(input)
 
         var snake = (0..9).map { Pair(it, Point(0, 0)) }.toMap()
         val map = mutableMapOf<Point, Boolean>()
 
         moves.forEach { move ->
-            val updatePos = when (move.first) {
-                "U" -> { pos:Point -> pos.copy(y = pos.y + 1) }
-                "D" -> { pos:Point -> pos.copy(y = pos.y - 1) }
-                "R" -> { pos:Point -> pos.copy(x = pos.x + 1) }
-                "L" -> { pos:Point -> pos.copy(x = pos.x - 1) }
-                else -> throw Exception("Unknown move: $move")
-            }
-
+            val updatePos = moveFunction(move)
             repeat(move.second) {
-                val newSnake = snake.keys.sorted().associate {  moveSnake(snake, it, updatePos) }
+                val newSnake = snake.keys.sorted().associate { moveSnake(snake, it, updatePos) }
                 snake = newSnake
                 map[snake[9]!!] = true
             }
