@@ -10,73 +10,6 @@ fun main() {
         return true
     }
 
-    fun part1(input: String, debug: Boolean = false): Long {
-        val moves = input.lines().map { l ->
-            val s = l.split(" ")
-            Pair(s[0], s[1].toInt())
-        }
-
-        var pos = Point(0, 0)
-        var prevPos = Point(0, 0)
-        var tail = Point(0, 0)
-
-        val map = mutableMapOf<Point, Boolean>()
-
-        moves.forEach { move ->
-            when (move.first) {
-                "U" -> {
-                    repeat(move.second) {
-                        prevPos = pos
-                        pos = pos.copy(y = pos.y + 1)
-                        if (!tail.isAround(pos)) {
-                            tail = prevPos
-                        }
-                        map[tail] = true
-                    }
-                }
-
-                "D" -> {
-                    repeat(move.second) {
-                        prevPos = pos
-                        pos = pos.copy(y = pos.y - 1)
-                        if (!tail.isAround(pos)) {
-                            tail = prevPos
-                        }
-                        map[tail] = true
-                    }
-                }
-
-                "R" -> {
-                    repeat(move.second) {
-                        prevPos = pos
-                        pos = pos.copy(x = pos.x + 1)
-                        if (!tail.isAround(pos)) {
-                            tail = prevPos
-                        }
-                        map[tail] = true
-                    }
-                }
-
-                "L" -> {
-                    repeat(move.second) {
-                        prevPos = pos
-                        pos = pos.copy(x = pos.x - 1)
-                        if (!tail.isAround(pos)) {
-                            tail = prevPos
-                        }
-                        map[tail] = true
-                    }
-                }
-
-                else -> throw Exception("Unknown move: $move")
-            }
-        }
-
-
-
-        return map.values.count { it }.toLong()
-    }
-
     fun moveSnake(snake: Map<Int, Point>, i: Int, move: (Point) -> Point): Pair<Int, Point> {
         val current = snake[i]!!
         val pair = if (i == 0) {
@@ -93,6 +26,33 @@ fun main() {
         return pair
     }
 
+    fun part1(input: String, debug: Boolean = false): Long {
+        val moves = input.lines().map { l ->
+            val s = l.split(" ")
+            Pair(s[0], s[1].toInt())
+        }
+
+        var snake = (0..1).map { Pair(it, Point(0, 0)) }.toMap()
+        val map = mutableMapOf<Point, Boolean>()
+
+        moves.forEach { move ->
+            val updatePos = when (move.first) {
+                "U" -> { pos:Point -> pos.copy(y = pos.y + 1) }
+                "D" -> { pos:Point -> pos.copy(y = pos.y - 1) }
+                "R" -> { pos:Point -> pos.copy(x = pos.x + 1) }
+                "L" -> { pos:Point -> pos.copy(x = pos.x - 1) }
+                else -> throw Exception("Unknown move: $move")
+            }
+            repeat(move.second) {
+                val newSnake = snake.keys.sorted().associate {  moveSnake(snake, it, updatePos) }
+                snake = newSnake
+                map[snake[1]!!] = true
+            }
+        }
+
+        return map.values.count { it }.toLong()
+    }
+
     fun part2(input: String, debug: Boolean = false): Long {
         val moves = input.lines().map { l ->
             val s = l.split(" ")
@@ -106,15 +66,14 @@ fun main() {
             val updatePos = when (move.first) {
                 "U" -> { pos:Point -> pos.copy(y = pos.y + 1) }
                 "D" -> { pos:Point -> pos.copy(y = pos.y - 1) }
-                "R" -> { pos:Point -> pos.copy(y = pos.x + 1) }
-                "L" -> { pos:Point -> pos.copy(y = pos.x - 1) }
+                "R" -> { pos:Point -> pos.copy(x = pos.x + 1) }
+                "L" -> { pos:Point -> pos.copy(x = pos.x - 1) }
                 else -> throw Exception("Unknown move: $move")
             }
 
             repeat(move.second) {
-                snake = snake.keys.sorted().associate { i ->
-                    moveSnake(snake, i) { pos -> updatePos.invoke(pos) }
-                }
+                val newSnake = snake.keys.sorted().associate {  moveSnake(snake, it, updatePos) }
+                snake = newSnake
                 map[snake[9]!!] = true
             }
         }
