@@ -1,5 +1,5 @@
-import AoCUtils
 import AoCUtils.test
+import java.security.Principal
 import kotlin.math.absoluteValue
 
 fun main() {
@@ -63,6 +63,25 @@ fun main() {
         return map.values.count { it }.toLong()
     }
 
+    fun printSnake(moveCommand: Pair<String, Int>, snake: Map<Int, Point>) {
+        val xMax = snake.values.map { it.x }.max()
+        val xMin = snake.values.map { it.x }.min()
+        val yMax = snake.values.map { it.y }.max()
+        val yMin = snake.values.map { it.y }.min()
+
+        val points = snake.map { Pair(it.value, it.key) }.toMap()
+        println("Move command: ${moveCommand.first} ${moveCommand.second}")
+        for (y in yMin..yMax) {
+            for (x in xMin..xMax) {
+                if(points.contains(Point(x, y))) print(points[Point(x, y)])
+                else print(".")
+            }
+            println()
+        }
+        println()
+
+    }
+
     fun part2(input: String, debug: Boolean = false): Long {
         val moves = parse(input)
 
@@ -75,6 +94,8 @@ fun main() {
                 val newSnake = snake.keys.sorted().associate { moveSnake(snake, it, updatePos) }
                 snake = newSnake
                 map[snake[9]!!] = true
+
+                printSnake(move, snake)
             }
         }
 
@@ -99,15 +120,15 @@ fun main() {
     part1(input, false) test Pair(5858L, "part 1")
 
     part2(testInput, false) test Pair(1L, "test 1 part 2")
-    part2(
-        "R 5\n" +
-                "U 8\n" +
-                "L 8\n" +
-                "D 3\n" +
-                "R 17\n" +
-                "D 10\n" +
-                "L 25\n" +
-                "U 20", false
-    ) test Pair(36L, "test 2 part 2")
-    part2(input) test Pair(2602L, "part 2")
+//    part2(
+//        "R 5\n" +
+//                "U 8\n" +
+//                "L 8\n" +
+//                "D 3\n" +
+//                "R 17\n" +
+//                "D 10\n" +
+//                "L 25\n" +
+//                "U 20", false
+//    ) test Pair(36L, "test 2 part 2")
+//    part2(input) test Pair(2602L, "part 2")
 }
