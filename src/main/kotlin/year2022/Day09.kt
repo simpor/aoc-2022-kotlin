@@ -1,5 +1,4 @@
 import AoCUtils.test
-import java.security.Principal
 import kotlin.math.absoluteValue
 
 fun main() {
@@ -63,22 +62,44 @@ fun main() {
         return map.values.count { it }.toLong()
     }
 
-    fun printSnake(moveCommand: Pair<String, Int>, snake: Map<Int, Point>) {
-//        val xMax = snake.values.map { it.x }.max()
-//        val xMin = snake.values.map { it.x }.min()
-//        val yMax = snake.values.map { it.y }.max()
-//        val yMin = snake.values.map { it.y }.min()
-        val xMax = 26
-        val xMin = 0
-        val yMax = 21
-        val yMin = 0
+    fun printSnake(moveCommand: Pair<String, Int>, snake: MutableMap<Int, Point>) {
+        val xMax = snake.values.map { it.x }.max()
+        val xMin = snake.values.map { it.x }.min()
+        val yMax = snake.values.map { it.y }.max()
+        val yMin = snake.values.map { it.y }.min()
+//        val xMax = 26
+//        val xMin = 0
+//        val yMax = 21
+//        val yMin = 0
 
         val points = snake.map { Pair(it.value, it.key) }.toMap()
         println("Move command: ${moveCommand.first} ${moveCommand.second}")
         for (y in yMax downTo yMin) {
             for (x in xMin..xMax) {
-                if (points.contains(Point(x, y))) print(points[Point(x, y)])
+                if (x == 0 && y == 0) print("s")
+                else if (points.contains(Point(x, y))) print(points[Point(x, y)])
                 else print(".")
+
+            }
+            println()
+        }
+        println()
+
+    }
+
+    fun printMap(map: MutableMap<Point, Boolean>) {
+        val xMax = map.keys.map { it.x }.max()
+        val xMin = map.keys.map { it.x }.min()
+        val yMax = map.keys.map { it.y }.max()
+        val yMin = map.keys.map { it.y }.min()
+
+        val points = map.map { it.key }.toSet()
+        println("Map")
+        for (y in yMax downTo yMin) {
+            for (x in xMin..xMax) {
+                if (points.contains(Point(x, y))) print("#")
+                else print(".")
+
             }
             println()
         }
@@ -87,7 +108,7 @@ fun main() {
     }
 
 
-    fun moveSnake2(snake: Map<Int, Point>, i: Int, move: (Point) -> Point): Pair<Int, Point> {
+    fun moveSnake2(snake: MutableMap<Int, Point>, i: Int, move: (Point) -> Point): Pair<Int, Point> {
         val current = snake[i]!!
         val pair = if (i == 0) {
             Pair(0, move.invoke(current))
@@ -96,44 +117,50 @@ fun main() {
             if (prev.isAround(current)) {
                 Pair(i, current)
             } else {
-                val firstMove = move.invoke(current)
-                val xDiff = (firstMove.x - prev.x).absoluteValue
-                val yDiff = (firstMove.y - prev.y).absoluteValue
-                val pos = if (xDiff > 1) {
-                    if (firstMove.x > prev.x) Point(firstMove.x - 1, firstMove.y)
-                    else Point(firstMove.x + 1, firstMove.y)
-                } else if (yDiff > 1) {
-                    if (firstMove.y > prev.y) Point(firstMove.x, firstMove.y - 1)
-                    else Point(firstMove.x, firstMove.y + 1)
-                } else firstMove
-
-                Pair(i, pos)
+                if (prev.x == current.x || prev.y == current.y) {// straight move
+                    if (prev.x == current.x) {
+                        if (current.y < prev.y) Pair(i, current.copy(y = current.y + 1))
+                        else Pair(i, current.copy(y = current.y - 1))
+                    } else {
+                        if (current.x < prev.x) Pair(i, current.copy(x = current.x + 1))
+                        else Pair(i, current.copy(x = current.x - 1))
+                    }
+                } else { // diagonal move
+                    if ((current.x - prev.x).absoluteValue > 1) {
+                        if (current.x < prev.x) Pair(i, prev.copy(x = prev.x - 1))
+                        else Pair(i, prev.copy(x = prev.x + 1))
+                    }else {
+                        if (current.y < prev.y) Pair(i, prev.copy(y = prev.y - 1))
+                        else Pair(i, prev.copy(y = prev.y + 1))
+                    }
+                }
             }
         }
         return pair
     }
 
-    data class History(val current: Point, val prev: Point)
 
     fun part2(input: String, debug: Boolean = false): Long {
         val moves = parse(input)
 
-        var snake = (0..9).map { Pair(it, History(Point(12, 5), Point(12, 5))) }.toMap().toMutableMap()
+        var snake = (0..9).map { Pair(it, Point(0, 0)) }.toMap().toMutableMap()
         val map = mutableMapOf<Point, Boolean>()
 
         moves.forEach { move ->
             val updatePos = moveFunction(move)
             repeat(move.second) {
                 (0..9).forEach { key ->
-                    snake[key] = moveSnake2(snake, key, updatePos).second
+                    val oldPos = snake[key]!!
+                    val newPos = moveSnake2(snake, key, updatePos).second
+                    snake[key] = newPos
                 }
                 map[snake[9]!!] = true
+                if (debug) printSnake(move, snake)
             }
-            if (debug) printSnake(move, snake)
 
         }
 
-
+        printMap(map)
 
         return map.values.count { it }.toLong()
     }
@@ -153,7 +180,8 @@ fun main() {
     part1(testInput, false) test Pair(13L, "test 1 part 1")
     part1(input, false) test Pair(5858L, "part 1")
 
-    part2(testInput, false) test Pair(1L, "test 1 part 2")
+//    part2(testInput, false) test Pair(1L, "test 1 part 2")
+
     part2(
         "R 5\n" +
                 "U 8\n" +
@@ -162,7 +190,7 @@ fun main() {
                 "R 17\n" +
                 "D 10\n" +
                 "L 25\n" +
-                "U 20", true
+                "U 20", false
     ) test Pair(36L, "test 2 part 2")
     part2(input) test Pair(2602L, "part 2")
 }
