@@ -95,7 +95,7 @@ fun main() {
     fun part1(input: String, debug: Boolean = false): Long {
         val moves = parse(input)
 
-        val snake = (0..1).map { Pair(it, Point(0, 0)) }.toMap().toMutableMap()
+        val snake = (0..1).associateWith { Point(0, 0) }.toMutableMap()
         val map = mutableMapOf<Point, Boolean>()
 
         moves.forEach { move ->
@@ -120,7 +120,7 @@ fun main() {
     fun part2(input: String, debug: Boolean = false): Long {
         val moves = parse(input)
 
-        val snake = (0..9).map { Pair(it, Point(0, 0)) }.toMap().toMutableMap()
+        val snake = (0..9).associateWith { Point(0, 0) }.toMutableMap()
         val map = mutableMapOf<Point, Boolean>()
 
         moves.forEach { move ->
@@ -157,7 +157,7 @@ fun main() {
     part1(testInput, false) test Pair(13L, "test 1 part 1")
     part1(input, false) test Pair(5858L, "part 1")
 
-//    part2(testInput, false) test Pair(1L, "test 1 part 2")
+    part2(testInput, false) test Pair(1L, "test 1 part 2")
 
     part2(
         "R 5\n" +
