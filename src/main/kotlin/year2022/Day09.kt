@@ -3,30 +3,21 @@ import kotlin.math.absoluteValue
 
 fun main() {
 
-    fun parse(input: String): List<Pair<String, Int>> {
-        val moves = input.lines().map { l ->
+    fun parse(input: String): List<Pair<String, Int>> = input.lines().map { l ->
             val s = l.split(" ")
             Pair(s[0], s[1].toInt())
         }
-        return moves
+
+    fun moveFunction(move: Pair<String, Int>): (Point) -> Point = when (move.first) {
+        "U" -> { pos: Point -> pos.copy(y = pos.y + 1) }
+        "D" -> { pos: Point -> pos.copy(y = pos.y - 1) }
+        "R" -> { pos: Point -> pos.copy(x = pos.x + 1) }
+        "L" -> { pos: Point -> pos.copy(x = pos.x - 1) }
+        else -> throw Exception("Unknown move: $move")
     }
 
-    fun moveFunction(move: Pair<String, Int>): (Point) -> Point {
-        val updatePos = when (move.first) {
-            "U" -> { pos: Point -> pos.copy(y = pos.y + 1) }
-            "D" -> { pos: Point -> pos.copy(y = pos.y - 1) }
-            "R" -> { pos: Point -> pos.copy(x = pos.x + 1) }
-            "L" -> { pos: Point -> pos.copy(x = pos.x - 1) }
-            else -> throw Exception("Unknown move: $move")
-        }
-        return updatePos
-    }
+    fun Point.isAround(other: Point): Boolean = if ((this.x - other.x).absoluteValue >= 2) false else (this.y - other.y).absoluteValue < 2
 
-    fun Point.isAround(other: Point): Boolean {
-        if ((this.x - other.x).absoluteValue >= 2) return false
-        if ((this.y - other.y).absoluteValue >= 2) return false
-        return true
-    }
 
     fun printSnake(moveCommand: Pair<String, Int>, snake: MutableMap<Int, Point>) {
         val xMax = snake.values.map { it.x }.max()
@@ -91,7 +82,7 @@ fun main() {
                     if ((current.x - prev.x).absoluteValue > 1) {
                         if (current.x < prev.x) Pair(i, prev.copy(x = prev.x - 1))
                         else Pair(i, prev.copy(x = prev.x + 1))
-                    }else {
+                    } else {
                         if (current.y < prev.y) Pair(i, prev.copy(y = prev.y - 1))
                         else Pair(i, prev.copy(y = prev.y + 1))
                     }
@@ -121,10 +112,11 @@ fun main() {
 
         }
 
-        if (debug)  printMap(map)
+        if (debug) printMap(map)
 
         return map.values.count { it }.toLong()
     }
+
     fun part2(input: String, debug: Boolean = false): Long {
         val moves = parse(input)
 
@@ -145,7 +137,7 @@ fun main() {
 
         }
 
-        if (debug)  printMap(map)
+        if (debug) printMap(map)
 
         return map.values.count { it }.toLong()
     }
