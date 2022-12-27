@@ -64,8 +64,6 @@ fun main() {
     fun part2(input: String, debug: Boolean = false): Long {
         val monkeyMap = parse(input)
         val human = "humn"
-
-
         return 0L
     }
 
