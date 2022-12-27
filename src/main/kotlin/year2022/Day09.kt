@@ -1,14 +1,14 @@
-import AoCUtils.test
 import kotlin.math.absoluteValue
 
-fun main() {
+
+class Day09 {
 
     fun parse(input: String): List<Pair<String, Int>> = input.lines().map { l ->
-            val s = l.split(" ")
-            Pair(s[0], s[1].toInt())
-        }
+        val s = l.split(" ")
+        Pair(s[0], s[1].toInt())
+    }
 
-    fun moveFunction(move: Pair<String, Int>): (Point) -> Point = when (move.first) {
+    fun moveFunction(move: String): (Point) -> Point = when (move) {
         "U" -> { pos: Point -> pos.copy(y = pos.y + 1) }
         "D" -> { pos: Point -> pos.copy(y = pos.y - 1) }
         "R" -> { pos: Point -> pos.copy(x = pos.x + 1) }
@@ -16,14 +16,15 @@ fun main() {
         else -> throw Exception("Unknown move: $move")
     }
 
-    fun Point.isAround(other: Point): Boolean = if ((this.x - other.x).absoluteValue >= 2) false else (this.y - other.y).absoluteValue < 2
+    fun Point.isAround(other: Point): Boolean =
+        if ((this.x - other.x).absoluteValue >= 2) false else (this.y - other.y).absoluteValue < 2
 
 
     fun printSnake(moveCommand: Pair<String, Int>, snake: MutableMap<Int, Point>) {
-        val xMax = snake.values.map { it.x }.max()
-        val xMin = snake.values.map { it.x }.min()
-        val yMax = snake.values.map { it.y }.max()
-        val yMin = snake.values.map { it.y }.min()
+        val xMax = snake.values.maxOfOrNull { it.x }!!
+        val xMin = snake.values.minOfOrNull { it.x }!!
+        val yMax = snake.values.maxOfOrNull { it.y }!!
+        val yMin = snake.values.minOfOrNull { it.y }!!
 
         val points = snake.map { Pair(it.value, it.key) }.toMap()
         println("Move command: ${moveCommand.first} ${moveCommand.second}")
@@ -41,10 +42,10 @@ fun main() {
     }
 
     fun printMap(map: MutableMap<Point, Boolean>) {
-        val xMax = map.keys.map { it.x }.max()
-        val xMin = map.keys.map { it.x }.min()
-        val yMax = map.keys.map { it.y }.max()
-        val yMin = map.keys.map { it.y }.min()
+        val xMax = map.keys.maxOfOrNull { it.x }!!
+        val xMin = map.keys.minOfOrNull { it.x }!!
+        val yMax = map.keys.maxOfOrNull { it.y }!!
+        val yMin = map.keys.minOfOrNull { it.y }!!
 
         val points = map.map { it.key }.toSet()
         println("Map")
@@ -61,7 +62,7 @@ fun main() {
     }
 
 
-    fun moveSnake2(snake: MutableMap<Int, Point>, i: Int, move: (Point) -> Point): Pair<Int, Point> {
+    fun moveSnake(snake: MutableMap<Int, Point>, i: Int, move: (Point) -> Point): Pair<Int, Point> {
         val current = snake[i]!!
         val pair = if (i == 0) {
             Pair(0, move.invoke(current))
@@ -99,11 +100,11 @@ fun main() {
         val map = mutableMapOf<Point, Boolean>()
 
         moves.forEach { move ->
-            val updatePos = moveFunction(move)
+            val updatePos = moveFunction(move.first)
             repeat(move.second) {
                 (0..1).forEach { key ->
                     val oldPos = snake[key]!!
-                    val newPos = moveSnake2(snake, key, updatePos).second
+                    val newPos = moveSnake(snake, key, updatePos).second
                     snake[key] = newPos
                 }
                 map[snake[1]!!] = true
@@ -120,18 +121,19 @@ fun main() {
     fun part2(input: String, debug: Boolean = false): Long {
         val moves = parse(input)
 
-        val snake = (0..9).associateWith { Point(0, 0) }.toMutableMap()
+        val range = 0..9
+        val snake = range.associateWith { Point(0, 0) }.toMutableMap()
         val map = mutableMapOf<Point, Boolean>()
 
         moves.forEach { move ->
-            val updatePos = moveFunction(move)
+            val updatePos = moveFunction(move.first)
             repeat(move.second) {
-                (0..9).forEach { key ->
+                range.forEach { key ->
                     val oldPos = snake[key]!!
-                    val newPos = moveSnake2(snake, key, updatePos).second
+                    val newPos = moveSnake(snake, key, updatePos).second
                     snake[key] = newPos
                 }
-                map[snake[9]!!] = true
+                map[snake[range.max()]!!] = true
                 if (debug) printSnake(move, snake)
             }
 
@@ -142,7 +144,7 @@ fun main() {
         return map.values.count { it }.toLong()
     }
 
-    val testInput =
+    fun testInput() =
         "R 4\n" +
                 "U 4\n" +
                 "L 3\n" +
@@ -152,22 +154,5 @@ fun main() {
                 "L 5\n" +
                 "R 2"
 
-    val input = AoCUtils.readText("year2022/day09.txt")
-
-    part1(testInput, false) test Pair(13L, "test 1 part 1")
-    part1(input, false) test Pair(5858L, "part 1")
-
-    part2(testInput, false) test Pair(1L, "test 1 part 2")
-
-    part2(
-        "R 5\n" +
-                "U 8\n" +
-                "L 8\n" +
-                "D 3\n" +
-                "R 17\n" +
-                "D 10\n" +
-                "L 25\n" +
-                "U 20", false
-    ) test Pair(36L, "test 2 part 2")
-    part2(input) test Pair(2602L, "part 2")
+    fun input() = AoCUtils.readText("year2022/day09.txt")
 }
