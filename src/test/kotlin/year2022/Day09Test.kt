@@ -124,6 +124,145 @@ class Day09Test : FunSpec({
             snake[0] shouldBe Point(-2, 1)
             snake[1] shouldBe Point(-1, 1)
         }
+        test("R1-D2") {
+            val range = 0..1
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            doMovement(range, day, snake, moveR)
+            doMovement(range, day, snake, moveD)
+            snake[0] shouldBe Point(1, -1)
+            snake[1] shouldBe Point(0, 0)
+            doMovement(range, day, snake, moveD)
+            snake[0] shouldBe Point(1, -2)
+            snake[1] shouldBe Point(1, -1)
+        }
+        test("L1-D2") {
+            val range = 0..1
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            doMovement(range, day, snake, moveL)
+            doMovement(range, day, snake, moveD)
+            snake[0] shouldBe Point(-1, -1)
+            snake[1] shouldBe Point(0, 0)
+            doMovement(range, day, snake, moveD)
+            snake[0] shouldBe Point(-1, -2)
+            snake[1] shouldBe Point(-1, -1)
+        }
+        test("D1-R2") {
+            val range = 0..1
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            doMovement(range, day, snake, moveD)
+            doMovement(range, day, snake, moveR)
+            snake[0] shouldBe Point(1, -1)
+            snake[1] shouldBe Point(0, 0)
+            doMovement(range, day, snake, moveR)
+            snake[0] shouldBe Point(2, -1)
+            snake[1] shouldBe Point(1, -1)
+        }
+        test("D1-L2") {
+            val range = 0..1
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            doMovement(range, day, snake, moveD)
+            doMovement(range, day, snake, moveL)
+            snake[0] shouldBe Point(-1, -1)
+            snake[1] shouldBe Point(0, 0)
+            doMovement(range, day, snake, moveL)
+            snake[0] shouldBe Point(-2, -1)
+            snake[1] shouldBe Point(-1, -1)
+        }
+    }
+    context("Advanced tests") {
+        test("R4") {
+            val moves = listOf(Pair("R", 4))
+
+            val range = 0..9
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            val map = day.logic(moves, range, snake, false)
+
+            snake[0] shouldBe Point(4, 0)
+            snake[1] shouldBe Point(3, 0)
+            snake[2] shouldBe Point(2, 0)
+            snake[3] shouldBe Point(1, 0)
+            snake[4] shouldBe Point(0, 0)
+            snake[5] shouldBe Point(0, 0)
+            snake[6] shouldBe Point(0, 0)
+            snake[7] shouldBe Point(0, 0)
+            snake[8] shouldBe Point(0, 0)
+            snake[9] shouldBe Point(0, 0)
+
+
+        }
+        test("R4-U1") {
+            val moves = listOf(Pair("R", 4), Pair("U", 1))
+
+            val range = 0..9
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            val map = day.logic(moves, range, snake, false)
+            day.printSnake(Pair("U", 1), snake)
+            snake[0] shouldBe Point(4, 1)
+            snake[1] shouldBe Point(3, 0)
+            snake[2] shouldBe Point(2, 0)
+            snake[3] shouldBe Point(1, 0)
+            snake[4] shouldBe Point(0, 0)
+            snake[5] shouldBe Point(0, 0)
+            snake[6] shouldBe Point(0, 0)
+            snake[7] shouldBe Point(0, 0)
+            snake[8] shouldBe Point(0, 0)
+            snake[9] shouldBe Point(0, 0)
+        }
+        test("R4-U2") {
+            val moves = listOf(Pair("R", 4), Pair("U", 2))
+
+            val range = 0..9
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            val map = day.logic(moves, range, snake, false)
+            day.printSnake(Pair("U", 2), snake)
+            snake[0] shouldBe Point(4, 2)
+            snake[1] shouldBe Point(4, 1)
+            snake[2] shouldBe Point(3, 1)
+            snake[3] shouldBe Point(2, 1)
+            snake[4] shouldBe Point(1, 1)
+            snake[5] shouldBe Point(0, 0)
+            snake[6] shouldBe Point(0, 0)
+            snake[7] shouldBe Point(0, 0)
+            snake[8] shouldBe Point(0, 0)
+            snake[9] shouldBe Point(0, 0)
+        }
+        test("R4-U3") {
+            val moves = listOf(Pair("R", 4), Pair("U", 3))
+
+            val range = 0..9
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            val map = day.logic(moves, range, snake, false)
+            day.printSnake(Pair("U", 3), snake)
+            snake[0] shouldBe Point(4, 3)
+            snake[1] shouldBe Point(4, 2)
+            snake[2] shouldBe Point(3, 1)
+            snake[3] shouldBe Point(2, 1)
+            snake[4] shouldBe Point(1, 1)
+            snake[5] shouldBe Point(0, 0)
+            snake[6] shouldBe Point(0, 0)
+            snake[7] shouldBe Point(0, 0)
+            snake[8] shouldBe Point(0, 0)
+            snake[9] shouldBe Point(0, 0)
+        }
+        test("R4-U4") {
+            val moves = listOf(Pair("R", 4), Pair("U", 4))
+
+            val range = 0..9
+            val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+            val map = day.logic(moves, range, snake, false)
+            day.printSnake(Pair("U", 4), snake)
+            snake[0] shouldBe Point(4, 4)
+            snake[1] shouldBe Point(4, 3)
+            snake[2] shouldBe Point(4, 2)
+            snake[3] shouldBe Point(3, 2)
+            snake[4] shouldBe Point(2, 2)
+            snake[5] shouldBe Point(1, 1)
+            snake[6] shouldBe Point(0, 0)
+            snake[7] shouldBe Point(0, 0)
+            snake[8] shouldBe Point(0, 0)
+            snake[9] shouldBe Point(0, 0)
+        }
+
     }
 })
 

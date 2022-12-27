@@ -80,13 +80,9 @@ class Day09 {
                         else Pair(i, current.copy(x = current.x - 1))
                     }
                 } else { // diagonal move
-                    if ((current.x - prev.x).absoluteValue > 1) {
-                        if (current.x < prev.x) Pair(i, prev.copy(x = prev.x - 1))
-                        else Pair(i, prev.copy(x = prev.x + 1))
-                    } else {
-                        if (current.y < prev.y) Pair(i, prev.copy(y = prev.y - 1))
-                        else Pair(i, prev.copy(y = prev.y + 1))
-                    }
+                    var x = if (current.x < prev.x) current.x + 1 else current.x - 1
+                    var y = if (current.y < prev.y) current.y + 1 else current.y - 1
+                    Pair(i, Point(x, y))
                 }
             }
         }
@@ -123,6 +119,19 @@ class Day09 {
 
         val range = 0..9
         val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+        val map = logic(moves, range, snake, debug)
+
+        if (debug) printMap(map)
+
+        return map.values.count { it }.toLong()
+    }
+
+    fun logic(
+        moves: List<Pair<String, Int>>,
+        range: IntRange,
+        snake: MutableMap<Int, Point>,
+        debug: Boolean
+    ): MutableMap<Point, Boolean> {
         val map = mutableMapOf<Point, Boolean>()
 
         moves.forEach { move ->
@@ -138,10 +147,7 @@ class Day09 {
             }
 
         }
-
-        if (debug) printMap(map)
-
-        return map.values.count { it }.toLong()
+        return map
     }
 
     fun testInput() =
