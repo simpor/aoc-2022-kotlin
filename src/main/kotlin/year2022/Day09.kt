@@ -115,9 +115,7 @@ class Day09 {
             val updatePos = moveFunction(move.first)
             repeat(move.second) {
                 range.forEach { key ->
-                    val oldPos = snake[key]!!
-                    val newPos = moveSnake(snake, key, updatePos).second
-                    snake[key] = newPos
+                    snake[key] = moveSnake(snake, key, updatePos).second
                 }
                 map[snake[range.max()]!!] = true
                 if (debug) printSnake(move, snake)
