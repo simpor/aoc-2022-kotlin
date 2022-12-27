@@ -71,19 +71,9 @@ class Day09 {
             if (prev.isAround(current)) {
                 Pair(i, current)
             } else {
-                if (prev.x == current.x || prev.y == current.y) {// straight move
-                    if (prev.x == current.x) {
-                        if (current.y < prev.y) Pair(i, current.copy(y = current.y + 1))
-                        else Pair(i, current.copy(y = current.y - 1))
-                    } else {
-                        if (current.x < prev.x) Pair(i, current.copy(x = current.x + 1))
-                        else Pair(i, current.copy(x = current.x - 1))
-                    }
-                } else { // diagonal move
-                    var x = if (current.x < prev.x) current.x + 1 else current.x - 1
-                    var y = if (current.y < prev.y) current.y + 1 else current.y - 1
-                    Pair(i, Point(x, y))
-                }
+                var x = if (current.x == prev.x) current.x else if (current.x < prev.x) current.x + 1 else current.x - 1
+                var y = if (current.y == prev.y) current.y else if (current.y < prev.y) current.y + 1 else current.y - 1
+                Pair(i, Point(x, y))
             }
         }
         return pair
@@ -92,22 +82,9 @@ class Day09 {
     fun part1(input: String, debug: Boolean = false): Long {
         val moves = parse(input)
 
-        val snake = (0..1).associateWith { Point(0, 0) }.toMutableMap()
-        val map = mutableMapOf<Point, Boolean>()
-
-        moves.forEach { move ->
-            val updatePos = moveFunction(move.first)
-            repeat(move.second) {
-                (0..1).forEach { key ->
-                    val oldPos = snake[key]!!
-                    val newPos = moveSnake(snake, key, updatePos).second
-                    snake[key] = newPos
-                }
-                map[snake[1]!!] = true
-                if (debug) printSnake(move, snake)
-            }
-
-        }
+        val range = 0..1
+        val snake = range.associateWith { Point(0, 0) }.toMutableMap()
+        val map = logic(moves, range, snake, debug)
 
         if (debug) printMap(map)
 
